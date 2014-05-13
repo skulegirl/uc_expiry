@@ -53,7 +53,7 @@ function uc_expiry_block_view($delta = '') {
 /**
  * uc_expiry_block_contents().
  */
-function uc_expiry_block_content($block) {
+function uc_expiry_block_content() {
   global $user;
   $output = "";
   
