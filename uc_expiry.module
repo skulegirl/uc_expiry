@@ -54,21 +54,36 @@ function uc_expiry_block_view($delta = '') {
  * uc_expiry_block_contents().
  */
 function uc_expiry_block_content() {
-  global $user;
+  $uid = arg(1);
   $output = "";
+  $viewed_user = user_load($uid);
+  if (is_null($viewed_user))
+  {
+    return $output;
+  }
   
-  $result = db_query_range('select u.reid, u.uid, u.rid, u.expiration, u.notified from {uc_roles_expirations} u where u.uid = :uid', 0, 1, array(':uid' => $user->uid));
-  
+  $result = db_query_range('select u.reid, u.uid, u.rid, u.expiration, u.notified from {uc_roles_expirations} u where u.uid = :uid', 0, 1, array(':uid' => $uid));
+
+  global $user; // currently logged in user
+   
+  if ($user->uid == $uid)
+  {
+    $name = 'Your';
+  }
+  else
+  {
+    $name = $viewed_user->name . '\'s';
+  }
   foreach($result as $expiry) {
     $result2 = db_query_range('select r.rid, r.name from {role} r where r.rid = :rid', 0, 1, array(':rid' => $expiry->rid));
     
     foreach ($result2 as $roles) {
       $output .= "<div class=\"uc_expiry\">";
       if (time() < $expiry->expiration) {
-        $output .= t("Your account expires on ". date("F dS, Y", $expiry->expiration) .".");
+        $output .= t("$name account expires on ". date("F dS, Y", $expiry->expiration) .".");
       }
       else {
-        $output .= t("Your account expired on ". date("F dS, Y", $expiry->expiration) .".  See all our ". l("membership options here", "membership-products") .".");
+        $output .= t("$name account expired on ". date("F dS, Y", $expiry->expiration) .".  See all our ". l("membership options here", "membership-products") .".");
       }
       $output .= "</div>";
     }
