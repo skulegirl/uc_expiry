@@ -108,7 +108,8 @@ function uc_expiry_block_content() {
     }
   }
   $post_text = variable_get('uc_expiry_post_text', '');
-  if (!empty($post_text))
+  // only add post text if there is other output
+  if (!empty($output) && !empty($post_text))
   {
     $output .= "<div class=\"uc_expiry_post_text\">";
     $output .= filter_xss($post_text);
