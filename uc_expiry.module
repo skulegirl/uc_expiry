@@ -33,6 +33,25 @@ function uc_expiry_block_info() {
   return $blocks;
 }
 
+function uc_expiry_block_configure($delta = '') {
+  $form = array();
+  if ($delta == 'uc_expiry') {
+    $form['uc_expiry_post_text'] = array(
+      '#type' => 'textarea',
+      '#title' => t('Text to add beneath the expiry date content'),
+      '#default_value' => variable_get('uc_expiry_post_text', ''),
+    );
+  }
+  return $form;
+}
+
+function uc_expiry_block_save($delta = '', $edit = array())
+{
+  if ($delta == 'uc_expiry') {
+    variable_set('uc_expiry_post_text', $edit['uc_expiry_post_text']);
+  } 
+}
+
 /**
  * Instance of hook_block_view
  */
@@ -87,6 +106,13 @@ function uc_expiry_block_content() {
       }
       $output .= "</div>";
     }
+  }
+  $post_text = variable_get('uc_expiry_post_text', '');
+  if (!empty($post_text))
+  {
+    $output .= "<div class=\"uc_expiry_post_text\">";
+    $output .= filter_xss($post_text);
+    $output .= "</div>";
   }
   return $output;
 }
