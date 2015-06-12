@@ -58,6 +58,7 @@ function uc_expiry_block_save($delta = '', $edit = array())
 function uc_expiry_block_view($delta = '') {
   // Need to generate the block for display
   // purposes. The $delta parameter tells us which block is being requested.
+  $block = array();
   if ($delta == 'uc_expiry') {
       // The subject is displayed at the top of the block. Note that it
       // should be passed through t() for translation.
